@@ -42,11 +42,26 @@ class serviceEstudiante {
     }
     initRutas() {
         this.router.get('/estudiante', this.Estudiante);
-        this.router.post('/insertEstudiante', this.insertarEstudiante);
+        this.router.get('/estudiante/:Carnet', this.buscarEstudiante);
+        this.router.post('/estudiante', this.insertarEstudiante);
+        this.router.put('/estudiante/:Carnet', this.actualizarEstudiante);
+        this.router.delete('/estudiante/:Carnet', this.eliminarEstudiante);
     }
     Estudiante(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ConsEstudiante_1.obtenerDatos)((error, resultados) => {
+                if (error) {
+                    res.status(400).send('Error al obtener los datos' + error);
+                    return;
+                }
+                res.status(200).send(resultados);
+            });
+        });
+    }
+    buscarEstudiante(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const carnet = req.params.Carnet;
+            (0, ConsEstudiante_1.buscarEstudiante)(carnet, (error, resultados) => {
                 if (error) {
                     res.status(400).send('Error al obtener los datos' + error);
                     return;
@@ -66,6 +81,27 @@ class serviceEstudiante {
                 }
                 res.json({ mensaje: "datos insertados" });
             });
+        });
+    }
+    actualizarEstudiante(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const carnet = req.params.Carnet;
+            const datos = req.body;
+            (0, ConsEstudiante_1.actualizarEstudiante)(carnet, datos, (error) => {
+                if (error) {
+                    res.status(400).json({ error: "Error de actualizacion" + error });
+                }
+                res.json({ mensaje: "datos actualizados" });
+            });
+        });
+    }
+    eliminarEstudiante(req, res) {
+        const carnet = req.params.Carnet;
+        (0, ConsEstudiante_1.eliminarEstudiante)(carnet, (error) => {
+            if (error) {
+                res.status(500).json({ error: 'Error de eliminacion' + error });
+            }
+            res.status(200).json({ Mensaje: "Datos eliminados" });
         });
     }
 }

@@ -12,7 +12,17 @@ conexion.query('SELECT * FROM Curso', (err, results)=>{
     return;
 })
 } 
-
+export function buscarCurso(codigo:any, callback:(err: Error | null, resultados?: any) => void){
+    const query= "SELECT * FROM Curso WHERE CodigoCurso =?";
+    conexion.query(query,[codigo], (err, results)=>{
+        if(err){
+            callback(err);
+            return;
+        }
+        callback(null, results);
+        return;
+    })
+    }
 export function insertarCursos(datos:any, callback: (error: Error | null) => void){
     const data: PostCursos = datos;
     console.log(data);
@@ -23,6 +33,28 @@ export function insertarCursos(datos:any, callback: (error: Error | null) => voi
           }
           callback(null);
     })
-    
+}
+export function actualizarCurso(codigoCurso:any, datos: any, callback:(error:Error | null)=> void){
+    const data: PostCursos = datos;
+    console.log (codigoCurso, data); 
+    conexion.query('UPDATE Curso SET ? WHERE CodigoCurso = ?',[data, codigoCurso], err=>{
+        if(err){
+            callback(err);
+            return
+        }
+        callback(null);
+        });
     
 }
+
+export function eliminarCurso(codigoCurso: any, callback:(error:Error | null)=> void){
+    console.log(codigoCurso);
+    conexion.query('DELETE FROM Curso WHERE CodigoCurso = ?', [codigoCurso], (err)=>{
+        if(err){
+            callback(err);
+            return 
+        }
+        callback(null);
+    } )
+}
+

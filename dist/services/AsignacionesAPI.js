@@ -42,11 +42,26 @@ class serviceAsignaciones {
     }
     initRutas() {
         this.router.get('/asignaciones', this.Asignaciones);
-        this.router.post('/insertarAsignacion', this.insertarAsignacion);
+        this.router.get('/asignaciones/:Carnet', this.buscarAsignacion);
+        this.router.post('/asignaciones', this.insertarAsignacion);
+        this.router.put('/asignaciones/:Carnet', this.actualizarAsignacion);
+        this.router.delete('/asignaciones/:Carnet', this.eliminarAsignacion);
     }
     Asignaciones(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ConsAsignaciones_1.obtenerAsignaciones)((error, resultados) => {
+                if (error) {
+                    res.status(400).send('Error al obtener los datos' + error);
+                    return;
+                }
+                res.status(200).send(resultados);
+            });
+        });
+    }
+    buscarAsignacion(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const carnet = req.params.Carnet;
+            (0, ConsAsignaciones_1.buscarAsignacion)(carnet, (error, resultados) => {
                 if (error) {
                     res.status(400).send('Error al obtener los datos' + error);
                     return;
@@ -68,6 +83,28 @@ class serviceAsignaciones {
             });
         });
     }
+    actualizarAsignacion(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const carnet = req.params.Carnet;
+            const datos = req.body;
+            (0, ConsAsignaciones_1.actualizarAsignacion)(carnet, datos, (error) => {
+                if (error) {
+                    res.status(400).json({ error: "Error de actualizacion" + error });
+                }
+                res.json({ mensaje: "datos actualizados" });
+            });
+        });
+    }
+    eliminarAsignacion(req, res) {
+        const carnet = req.params.Carnet;
+        (0, ConsAsignaciones_1.eliminarAsignacion)(carnet, (error) => {
+            if (error) {
+                res.status(500).json({ error: 'Error de eliminacion' + error });
+            }
+            res.status(200).json({ Mensaje: "Datos eliminados" });
+        });
+    }
 }
 exports.serviceAsignaciones = serviceAsignaciones;
+exports.default = serviceAsignaciones;
 //# sourceMappingURL=AsignacionesAPI.js.map
